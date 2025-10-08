@@ -6,6 +6,7 @@ import spacy
 import logging
 import pandas as pd
 from tqdm import tqdm
+from typing import Dict, Any, List
 
 INPUT_FILE = "data/processed/preprocessed_dataset.jsonl"
 OUTPUT_FILE = "data/processed/linguistic_features.jsonl"
@@ -14,8 +15,10 @@ STATS_FILE = "data/processed/token_stats.csv"
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
 # spaCy Model
+NLP_MODEL_NAME = "en_core_web_sm"
+print(f"Loading spaCy model: {NLP_MODEL_NAME}...")
 try:
-    nlp = spacy.load("en_core_web_sm", disable=["ner"])
+    nlp = spacy.load(NLP_MODEL_NAME, disable=["ner"])
 except OSError:
     logging.error("spaCy model not found. Run: python -m spacy download en_core_web_sm")
     raise SystemExit
@@ -23,7 +26,7 @@ except OSError:
 
 # Linguistic Feature Extraction
 
-def extract_features(text: str):
+def extract_features(text: str) -> Dict[str, Any]:
     """Tokenize text and extract POS, lemmas, and content lemmas."""
     doc = nlp(text)
     tokens, pos_tags, lemmas, content_lemmas = [], [], [], []
@@ -92,8 +95,9 @@ def process_dataset(input_path=INPUT_FILE, output_path=OUTPUT_FILE, stats_path=S
     df_stats = pd.DataFrame(token_counts, columns=["token_count"])
     df_stats["length_category"] = pd.cut(
         df_stats["token_count"],
-        bins=[0, 50, 100, 250, 500, 1000, 2000],
-        labels=["<50", "50–100", "100–250", "250–500", "500–1000", ">1000"]
+        bins=[0, 50, 100, 250, 500, 1000, 2000, df_stats["token_count"].max() + 1],
+        labels=["<50", "50–100", "100–250", "250–500", "500–1000", "1000–2000", ">2000" ],
+        right=False # Include the lower bound
     )
     df_stats.to_csv(stats_path, index=False)
 
