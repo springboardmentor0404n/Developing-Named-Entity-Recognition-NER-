@@ -42,7 +42,6 @@ def normalize_text(text: str) -> str:
     text = " ".join(text.split())
     return text.strip()
 
-# TODO: Replace short_hash with full SHA256-based hash during cleaning for better deduplication
 
 def sha256_hash(text: str) -> str:
     """Short hash for deduplication."""
