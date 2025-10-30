@@ -7,9 +7,10 @@ import evaluate
 
 # --- Config ---
 DATA_DIR = "data/processed/ner_auto_splits"
-MODEL_NAME = "distilbert-base-uncased"
-BATCH_SIZE = 4  # smaller for CPU
+MODEL_NAME = "ProsusAI/finbert"
+BATCH_SIZE = 2  
 EPOCHS = 3
+OUTPUT_DIR = "data/finbert_ner_results" 
 
 # --- Device Check ---
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -70,15 +71,15 @@ def compute_metrics(eval_pred):
 
 # --- Training Arguments ---
 args = TrainingArguments(
-    output_dir="./ner_results",
+    output_dir=OUTPUT_DIR,
     eval_strategy="epoch",
     save_strategy="epoch",
-    learning_rate=5e-5,
+    learning_rate=3e-5,
     per_device_train_batch_size=BATCH_SIZE,
     per_device_eval_batch_size=BATCH_SIZE,
     num_train_epochs=EPOCHS,
     weight_decay=0.01,
-    logging_dir="./logs",
+    logging_dir=f"{OUTPUT_DIR}/logs",  # ✅ save logs inside same folder
     load_best_model_at_end=True,
     report_to="none",  # disable wandb for simplicity
     save_total_limit=1
