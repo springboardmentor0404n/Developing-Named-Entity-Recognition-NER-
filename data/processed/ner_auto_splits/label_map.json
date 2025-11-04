@@ -1,0 +1,24 @@
+{
+  "label2id": {
+    "B-DATE": 0,
+    "B-FIN_TERM": 1,
+    "B-FIN_VALUE": 2,
+    "B-ORG": 3,
+    "I-DATE": 4,
+    "I-FIN_TERM": 5,
+    "I-FIN_VALUE": 6,
+    "I-ORG": 7,
+    "O": 8
+  },
+  "id2label": {
+    "0": "B-DATE",
+    "1": "B-FIN_TERM",
+    "2": "B-FIN_VALUE",
+    "3": "B-ORG",
+    "4": "I-DATE",
+    "5": "I-FIN_TERM",
+    "6": "I-FIN_VALUE",
+    "7": "I-ORG",
+    "8": "O"
+  }
+}
