@@ -1,0 +1,14 @@
+streamlit
+google-generativeai
+python-dotenv
+PyMuPDF
+yfinance
+requests
+pandas
+matplotlib
+pdfplumber
+
+# Note: camelot is not pure-Python and requires system dependencies (ghostscript, opencv, tk).
+# To install camelot with pip on Windows, follow instructions at:
+# https://camelot-py.readthedocs.io/en/master/user/install.html
+# If you want to install via pip: pip install "camelot-py[cv]"
