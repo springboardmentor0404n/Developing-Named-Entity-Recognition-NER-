@@ -1,0 +1,13 @@
+transformers
+torch
+streamlit
+sentence-transformers
+pandas
+numpy
+beautifulsoup4
+pdfplumber
+requests
+pytesseract
+pdf2image
+faiss-cpu
+yfinance

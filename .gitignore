@@ -1,0 +1,17 @@
+# Ignore model files & checkpoints
+bert-ner-final/
+bert-ner-output/
+bert-ner-transformer/
+
+# Ignore large files
+*.safetensors
+*.bin
+*.pt
+*.zip
+
+# Ignore virtual environment
+venv/
+
+# Ignore cached files
+__pycache__/
+*.log
