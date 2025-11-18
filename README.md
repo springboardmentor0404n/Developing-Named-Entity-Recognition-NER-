@@ -1,223 +1,200 @@
-🚀 FinanceInsight: Automated Financial Document Understanding System
-Developing Named Entity Recognition (NER) Models for Financial Data Extraction
+# 🚀 FinanceInsight: Automated Financial Document Understanding System  
+### Developing Named Entity Recognition (NER) Models for Financial Data Extraction  
+**Infosys Springboard Virtual Internship 6.0 — Batch 3**
 
-Infosys Springboard Virtual Internship 6.0 — Batch 3
+---
 
-🔍 Overview
+## 🔍 Overview
 
-FinanceInsight is an end-to-end financial document analysis system that processes large and unstructured financial PDFs such as Annual Reports, CSR Reports, and SEC 10-K filings.
+**FinanceInsight** is an end-to-end financial document analysis system that processes large and unstructured financial PDFs such as Annual Reports, CSR Reports, and SEC 10-K filings.
 
 The system extracts financial entities, tables, document sections, and insights using:
 
-A custom BERT-based NER model
+- 🧠 A custom **BERT-based NER model**
+- 📄 PDF parsing (**pdfplumber**, **PyPDF2**)
+- 📊 Table extraction engine
+- 🖥️ Streamlit user interface
 
-PDF parsing (pdfplumber, PyPDF2)
+Created under the guidance of **Mr. G. Navinash**.
 
-Table extraction engine
+---
 
-Streamlit UI
+## 🎯 Objectives
 
-Created under the guidance of Mr. G. Navinash.
+- Extract financial entities: **Revenue, Profit, Ratios, Company Names**
+- Identify financial events: **Dividends, Stock splits, Litigation, M&A**
+- Parse complex financial tables: **Balance Sheet, P&L, Cash Flow**
+- Segment documents into **MD&A**, **Risks**, **Highlights**, **Statements**
+- Build a user-friendly **Streamlit app**
+- Generate structured **JSON output**
 
-🎯 Objectives
+---
 
-Extract financial entities: Revenue, Profit, Ratios, Company Names
-
-Identify financial events: Dividends, Stock splits, Litigation, M&A
-
-Parse complex financial tables (Balance Sheet, P&L, Cash Flow)
-
-Segment documents into MD&A, Risks, Highlights, Statements
-
-Build a user-friendly Streamlit app
-
-Output structured JSON for downstream analytics
-
-🧠 Problem Statement
+## 🧠 Problem Statement
 
 Financial PDFs are long, unstructured, and inconsistent across companies.
-Challenges include:
 
-Extracting entities from free-text.
+### Challenges include:
+- Extracting entities from unstructured text  
+- Detecting events inside narrative paragraphs  
+- Parsing **multi-column**, **multi-page** tabular data  
+- Identifying major financial sections  
+- Building an intuitive UI  
 
-Detecting financial events buried inside narrative text.
+---
 
-Parsing multi-column, multi-page PDF tables.
+## 🛠️ Solution Approach
 
-Identifying major financial sections automatically.
+FinanceInsight solves these challenges using a modular architecture:
 
-Providing a clean UI for non-technical users.
+### **1️⃣ PDF Extraction Layer**
+- Cleans text  
+- Flattens columns  
+- Normalizes spacing  
 
-🛠️ Problem Solution
+### **2️⃣ Document Segmentation Layer**
+Detects:
+- MD&A  
+- Risk Factors  
+- Notes  
+- Highlights  
 
-FinanceInsight addresses the above challenges using a modular extraction framework:
+### **3️⃣ Financial NER Layer (BERT-based)**
+Extracts:
+- Revenue  
+- Expenses  
+- Profit  
+- Company names  
+- Ratios  
+- Dates  
 
-PDF Extraction Layer
-Cleans text, flattens columns, normalizes spacing.
+### **4️⃣ Table Processing Layer**
+- Uses **pdfplumber** + heuristics to extract multi-column & multi-page tables  
 
-Document Segmentation Layer
-Detects MD&A, Risk Factors, Financial Highlights, Notes, etc.
+### **5️⃣ Streamlit UI Layer**
+- Interactive PDF upload & analysis  
 
-Financial NER Layer (BERT-based)
-Extracts revenue, expenses, profit, company names, ratios, dates.
+### **6️⃣ Output Layer**
+- Generates structured **JSON + insights**
 
-Table Processing Layer
-Extracts complex tables using pdfplumber + heuristics.
+---
 
-Frontend UI Layer
-Built using Streamlit for interactive PDF upload & analysis.
+## 🧰 Technologies Used
 
-Output Layer
-Generates structured tables + JSON + insights.
+### **Languages**
+- Python 3.12+
 
-🧱 System Architecture
-         ┌──────────────┐
-         │   PDF Upload  │
-         └───────┬──────┘
-                 │
-        ┌────────▼─────────┐
-        │  PDF Text Parser  │
-        └────────┬─────────┘
-                 │
-     ┌───────────▼───────────┐
-     │ Document Segmentation │
-     └───────────┬───────────┘
-                 │
-     ┌───────────▼───────────┐
-     │   Financial NER Model  │
-     └───────────┬───────────┘
-                 │
-     ┌───────────▼───────────┐
-     │  Table Extraction Engine │
-     └───────────┬───────────┘
-                 │
-     ┌───────────▼───────────┐
-     │ Streamlit UI + Output │
-     └────────────────────────┘
+### **NLP / ML**
+- HuggingFace Transformers  
+- PyTorch  
+- Tokenizers  
 
-🧰 Technologies Used
-Languages
+### **PDF Processing**
+- PyPDF2  
+- pdfplumber  
 
-Python 3.12+
+### **Data Handling**
+- pandas  
+- numpy  
 
-Libraries
-NLP / ML
+### **Frontend**
+- Streamlit  
 
-HuggingFace Transformers
+### **Version Control**
+- Git & GitHub  
 
-PyTorch
+---
 
-Tokenizers
+## 🖥️ Running the Application
 
-PDF Processing
-
-PyPDF2
-
-pdfplumber
-
-Data
-
-pandas
-
-numpy
-
-Frontend
-
-Streamlit
-
-Version Control
-
-Git & GitHub
-
-📁 Project Structure
-FinanceInsight/
-│── financial_extractor_app.py
-│── requirements.txt
-│── train.json
-│── test.json
-│── valid.json
-│── label.json
-│── README.md
-└── (model folders removed due to GitHub size limit)
-
-🖥️ Running the Application
-1️⃣ Clone Repository
+### **1️⃣ Clone Repository**
+```bash
 git clone https://github.com/springboardmentor0404n/Developing-Named-Entity-Recognition-NER-.git
+```
 
-2️⃣ Navigate
+### **2️⃣ Navigate**
+```bash
 cd finance_ner_app
+```
 
-3️⃣ Create Virtual Environment
+### **3️⃣ Create Virtual Environment**
+```bash
 python -m venv venv
+```
 
-4️⃣ Activate
+### **4️⃣ Activate**
+```bash
 venv\Scripts\activate
+```
 
-5️⃣ Install Dependencies
+### **5️⃣ Install Dependencies**
+```bash
 pip install -r requirements.txt
+```
 
-6️⃣ Run Streamlit App
+### **6️⃣ Run Streamlit App**
+```bash
 streamlit run financial_extractor_app.py
+```
 
+App opens at:  
+👉 **http://localhost:8501**
 
-The app opens at:
-👉 http://localhost:8501
+---
 
-📊 Results
+## 📊 Results
 
-Tested Successfully On:
+### **Tested On**
+- Tesla SEC 10-K (2023)  
+- Nestlé Annual Report 2022  
+- Sample Financial PDFs  
 
-Tesla SEC 10-K (2023)
+### **Extracted**
+- ✔ Clean document text  
+- ✔ Segmented sections  
+- ✔ 43+ tables (Nestlé 2022)  
+- ✔ Entities: Revenue, Profit, Company Names, Assets  
+- ✔ JSON output  
 
-Nestlé Annual Report 2022
+---
 
-Sample Financial PDFs
+## ✨ Key Features
+- Multi-column PDF support  
+- BERT-based Financial NER  
+- Table extraction engine  
+- Automatic section segmentation  
+- Finance-specific insights  
+- Streamlit drag-and-drop interface  
+- JSON export  
 
-Extracted Results:
+---
 
-✔ Clean Document Text
-✔ Segmented Sections
-✔ 43+ Financial Tables (in Nestlé Report)
-✔ Identified Entities: Revenue, Profit, Company Names, Assets
-✔ Generated JSON Output
+## 🚀 Future Enhancements
+- GPT-based summarization  
+- Financial ratio calculator  
+- Event classification  
+- Sentiment Analysis (MD&A)  
+- Year-over-year comparison  
+- Multi-company benchmarking  
 
-✨ Key Features
+---
 
-Full PDF analysis with multi-column support
+## 👩‍💻 Author
+**Swati Upadhyay**  
+Infosys Springboard — Batch 3  
+Project: **FinanceInsight – Financial NER System**
 
-BERT-based Financial NER
+---
 
-Table extraction engine
+## 🏁 Conclusion
 
-Automatic section segmentation
+FinanceInsight automates extraction of financial information from complex PDFs using:
 
-Finance-specific insights
+- Deep learning  
+- NLP  
+- PDF parsing  
+- Table extraction  
+- Streamlit UI  
 
-Streamlit drag-and-drop interface
+A complete **production-grade, end-to-end financial analytics pipeline**.
 
-JSON export
-
-🚀 Future Enhancements
-
-GPT-Based financial summarization
-
-Financial ratio calculator
-
-Event classification
-
-Sentiment Analysis (MD&A)
-
-Year-over-year comparison
-
-Multi-company benchmarking
-
-👩‍💻 Author
-
-Swati Upadhyay
-Infosys Springboard — Batch 3
-Project: FinanceInsight – Financial NER System
-
-🏁 Conclusion
-
-FinanceInsight successfully automates extraction of financial information from complex PDFs.
-It integrates deep learning, PDF parsing, NLP, table extraction, and UI development into a strong, production-like system.
