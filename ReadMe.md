@@ -1,10 +1,10 @@
-FINAL PPT CONTENT – FinanceInsight Project
-Slide 1 – TITLE
+– FinanceInsight Project
+ 1 – TITLE
 
 FinanceInsight: Financial Named Entity Recognition System
 Infosys Springboard Internship – 2 Months Project
 
-Slide 2 – TABLE OF CONTENTS
+2 – TABLE OF CONTENTS
 
 TABLE OF CONTENTS
 
@@ -24,7 +24,7 @@ Conclusion
 
 Results
 
-Slide 3 – PROJECT OVERVIEW
+ 3 – PROJECT OVERVIEW
 
 Developed a Financial Named Entity Recognition (NER) system
 
@@ -44,7 +44,7 @@ Achieved 98.24% accuracy with 3 epochs & batch size = 5
 
 Helps analysts extract structured financial data automatically from text
 
-Slide 4 – DATASET OVERVIEW & KEY INSIGHTS (EDA)
+ 4 – DATASET OVERVIEW & KEY INSIGHTS (EDA)
 
 Dataset Used: constituents-financials.csv
 Key Columns:
@@ -130,7 +130,7 @@ F1-Score
 
 Used classification report & confusion matrix
 
-Slide 6 – MODEL ARCHITECTURE
+ 6 – MODEL ARCHITECTURE
 
 Architecture Pipeline:
 
@@ -157,7 +157,7 @@ Better context understanding
 
 High accuracy for financial entity extraction
 
-Slide 7 – TRAINING & ACCURACY
+7 – TRAINING & ACCURACY
 Metric	Value
 Accuracy	98.24%
 Epochs	3
@@ -170,7 +170,7 @@ F1 Score	(from code)
 ✔ Used Adam Optimizer + Learning Rate Scheduler
 ✔ Stability achieved using Gradient Clipping
 
-Slide 8 – CONCLUSION
+ 8 – CONCLUSION
 
 Developed end-to-end Financial NER system
 
