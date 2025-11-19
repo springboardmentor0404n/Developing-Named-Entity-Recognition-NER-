@@ -1,6 +1,6 @@
 FinanceInsight — Financial Named Entity Recognition 
 
-This project is part of the AI Internship Program  and focuses on building a Financial Named Entity Recognition (NER) model using the FiNER-139 dataset.
+This project is part of the AI Internship Program  and focuses on building a Financial Named Entity Recognition (NER) model using the FiNER-139 dataset.DOWNLOAD_URL = "https://huggingface.co/datasets/nlpaueb/finer-139/resolve/main/finer139.zip"
 The main goal is to identify financial entities such as:
 
 Company names
