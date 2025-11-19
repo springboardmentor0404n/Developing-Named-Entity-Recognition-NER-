@@ -1,0 +1,78 @@
+# -----------------------------
+# OS / Editor / Python ignores
+# -----------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+env/
+.finbert_env/
+*.env
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# -----------------------------
+# Project-specific ignores
+# -----------------------------
+
+# === LARGE DATASETS (TSV, XLS, CSV, PKL, NPY, IDX) ===
+*.tsv
+*.xlsx
+*.xls
+*.csv
+*.pkl
+*.npy
+*.idx
+*.json
+
+# KEEP ONLY financeinsight_labeled_with_positive.csv?  
+# If YES, comment it out:
+# !financeinsight_labeled_with_positive.csv
+
+# === MODEL DIRECTORIES (ALL FINBERT versions) ===
+finbert_finetuned/
+finbert_finetuned_v2/
+finbert_finetuned_v3/
+finbert_finetuned_v4/
+finbert_results/
+finbert_results_v2/
+finbert_results_v3/
+finbert_results_v4/
+tmp_trainer/
+
+# === OUTPUT INDEX / EMBEDDINGS / METADATA FILES ===
+embeddings.npy
+faiss_index.idx
+chunks_meta.json
+corpus_embs.npy
+
+index_data/
+
+# === RETRIEVAL OUTPUTS ===
+retrieve_outputs/
+retrieve_extract_*.csv
+retrieve_extract_*.xls
+retrieve_extract_*.json
+
+# -----------------------------
+# Logs / cache
+# -----------------------------
+*.log
+cache/
+logs/
+downloaded/
+models/
+
+# -----------------------------
+# Ignore tokenizers/vocab files
+# -----------------------------
+tokenizer.json
+vocab.txt
