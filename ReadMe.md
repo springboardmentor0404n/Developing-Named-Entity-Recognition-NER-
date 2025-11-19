@@ -1,8 +1,7 @@
 – FinanceInsight Project
- 1 – TITLE
+– TITLE
 
 FinanceInsight: Financial Named Entity Recognition System
-Infosys Springboard Internship – 2 Months Project
 
 2 – TABLE OF CONTENTS
 
