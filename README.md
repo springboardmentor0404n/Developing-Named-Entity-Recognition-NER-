@@ -1,183 +1,194 @@
 <p align="center">
-  <img src="assets/logo.png" alt="Project Logo" height="160">
+  <img src="logo.png" alt="FinanceInsight Logo" width="160">
 </p>
 
-<h1 align="center">FinanceInsight – AI-Powered Financial Document Analysis</h1>
+<h1 align="center">📊 FinanceInsight — Financial Document Intelligence Platform</h1>
 
 <p align="center">
-  <b>End-to-end NLP + ML pipeline for parsing, segmenting and analyzing financial reports</b>
+A complete end-to-end AI system that reads, segments, extracts events, parses tables, and visualizes insights from financial reports using NLP, ML, and Dockerized deployment.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Build-Passing-brightgreen">
-  <img src="https://img.shields.io/badge/Python-3.10-blue">
-  <img src="https://img.shields.io/badge/Streamlit-1.32-red">
-  <img src="https://img.shields.io/badge/Docker-Ready-brightgreen">
-  <img src="https://img.shields.io/badge/License-MIT-yellow">
+  <img src="https://img.shields.io/badge/Python-3.10-blue?logo=python">
+  <img src="https://img.shields.io/badge/Framework-Streamlit-ff4b4b?logo=streamlit">
+  <img src="https://img.shields.io/badge/Container-Docker-2496ED?logo=docker">
+  <img src="https://img.shields.io/github/stars/yogender-kumar-creator/FinanceInsight?style=social">
+  <img src="https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render">
 </p>
 
 ---
-
-## 📌 Overview
-
-**FinanceInsight** is an end-to-end AI system to analyze financial documents like **Annual Reports, 10-K Filings, Investor Reports**, etc.  
-It performs automated:
-
-- **Text Extraction**
-- **Report Segmentation**
-- **Table Extraction**
-- **Event Extraction (NER-based)**
-- **Sentiment Analysis (FinBERT)**
-- **Dashboard Visualization**
-- **Docker Deployment**
-
-The project includes a full ML pipeline + a Streamlit dashboard + production-level Docker setup.
-
----
-
-## 🎥 Demo (GIF Preview)
-
-> Replace `assets/demo.gif` with your own recording.
 
 <p align="center">
-  <img src="assets/demo.gif" alt="Demo GIF" width="750">
+  <img src="demo.gif" width="800" alt="Demo GIF">
 </p>
 
 ---
 
-## 🚀 Features
+## 🚀 Overview
 
-### 🔎 NLP & ML Pipeline
-- PDF segmentation by headings  
-- Table extraction & classification  
-- Clean text preprocessing  
-- Event extraction with transformer model  
-- Sentiment analysis using FinBERT  
+**FinanceInsight** is an AI-powered financial analysis pipeline that processes Annual Reports, Investor Presentations, 10-K/10-Q reports, and corporate disclosures.  
+The system automatically:
 
-### 📊 Financial Dashboard (Streamlit)
-- View segmented sections  
-- View extracted tables  
-- Visualize events and insights  
-- Fully interactive UI  
-
-### 🐳 Docker Deployment
-- One-command build  
-- Works on any server  
-- Ready for Render / AWS / DigitalOcean  
+- Converts PDF reports into structured sections  
+- Extracts tables and financial metrics  
+- Detects company events & entities  
+- Performs sentiment analysis using FinBERT  
+- Visualizes everything inside a clean **Streamlit Dashboard**  
+- Is fully packaged & deployable using **Docker** and **Render Cloud**  
 
 ---
 
-## 📁 Project Structure
+## 🔥 Key Features
 
-```bash
-FinanceInsight/
+### **📘 1. PDF Segmentation**
+Breaks the report into logical sections like:
+- Management Discussion
+- Risk Factors  
+- Financial Performance  
+- Notes & Statements  
+
+### **📊 2. Table Extraction**
+Parses financial tables using:
+- `pdfplumber`  
+- Automatic type classification (Balance Sheet, P&L, Cash Flow)
+
+### **🧠 3. Entity & Event Extraction**
+Uses Transformer-based NLP to detect:
+- Company names  
+- Products  
+- Events (profit drop, acquisition, revenue growth, etc.)
+
+### **📈 4. Interactive Dashboard**
+Built in Streamlit, offering:
+- Document viewer  
+- Segmented content explorer  
+- Tables viewer  
+- Financial sentiment graph  
+- Event timeline  
+
+### **🐳 5. Docker Deployment**
+One-command deployment using:
+
+```
+docker build -t financial-dashboard .
+docker run -p 8501:8501 financial-dashboard
+```
+
+### **🌐 6. Cloud Deployment (Render)**
+Upload code → Select Docker → Deploy → Done.
+
+---
+
+## 🗂️ Project Structure
+
+```
+📦 FinanceInsight
 │
 ├── app/
-│   ├── streamlit_app.py        # Dashboard UI
-│   ├── Dockerfile              # Production container
-│   └── requirements.txt
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── streamlit_app.py
 │
 ├── scripts/
 │   ├── 01_preprocess_fiqa.py
 │   ├── 02_eda_fiqa.py
 │   ├── 03_event_extraction.py
-│   ├── 04_augment_data.py
 │   ├── 05_segment_reports.py
 │   ├── 06_parse_tables.py
 │   ├── 07_eval_pipeline.py
-│   ├── financial_entity_event_extractor.py
-│   └── test_model.py
+│
+├── data/
+│   └── processed/
 │
 ├── outputs/
 │   ├── doc_segments/
 │   ├── tables/
 │   └── events/
 │
-├── data/
-│   └── processed/
-│
-├── sample_reports/
-│   └── 10K_sample.pdf
-│
-├── README.md
-└── LICENSE
-🛠 Installation (Local)
-1️⃣ Clone the repository
+└── README.md
+```
+
+---
+
+## 🛠️ Installation
+
+### **Clone the repository**
+```
 git clone https://github.com/yogender-kumar-creator/FinanceInsight.git
 cd FinanceInsight
+```
 
-2️⃣ Install dependencies
+### **Install environment**
+```
 pip install -r app/requirements.txt
+```
 
-3️⃣ Run Streamlit dashboard
+### **Run Streamlit app**
+```
 streamlit run app/streamlit_app.py
+```
 
-🐳 Docker Deployment
-1️⃣ Build Docker image
+---
+
+## 🐳 Docker Setup
+
+### **Build Docker Image**
+```
 docker build -t financial-dashboard ./app
+```
 
-2️⃣ Run container
-docker run -p 8501:8501 \
-  -v A:/Infosys/outputs:/app/outputs \
-  financial-dashboard
+### **Run the Container**
+```
+docker run -p 8501:8501 financial-dashboard
+```
 
+Visit:  
+👉 **http://localhost:8501**
 
-Then open:
+---
 
-👉 http://localhost:8501
+## 🌐 Deploy on Render
 
-📘 How It Works (Pipeline)
-1️⃣ PDF Segmentation
-python scripts/05_segment_reports.py
+1. Push to GitHub  
+2. Go to **Render.com → New Web Service**  
+3. Select repo  
+4. Choose **Docker**  
+5. Done 🎉  
 
-2️⃣ Extract Tables
-python scripts/06_parse_tables.py
+---
 
-3️⃣ Extract Events
-python scripts/03_event_extraction.py
+## 📄 Supported Inputs
 
-4️⃣ Evaluate Pipeline
-python scripts/07_eval_pipeline.py
+- ✔ PDF (Selectable text)  
+- ✔ Scanned PDFs (if OCR-enabled)  
+- ✔ Financial reports (10-K, 10-Q, AR, IP)  
+- ✔ Company Annual Reports  
 
-5️⃣ View on Dashboard
+---
 
-Output automatically appears in Streamlit.
+## 💡 Future Improvements
 
-🧪 Example Results
+- OCR integration for scanned PDFs  
+- Advanced entity linking with Wikidata  
+- Financial anomaly detection  
+- Multi-company comparison dashboard  
 
-Total Segments: ✓
+---
 
-Total Tables Extracted: ✓
+## 🙌 Acknowledgements
 
-Events Found: ✓
+- HuggingFace Transformers  
+- Streamlit  
+- Docker  
+- pandas & pdfplumber  
+- FinBERT (ProsusAI)
 
-VERIFIED Events: ✓
+---
 
-Errors (NER): ✓
+## ⭐ Give this project a star!
 
-(Your evaluation summary is included inside the repo)
+If this project helped you, please ⭐ **star the repository** to support development.
 
-🤝 Contribution Guidelines
-
-You are welcome to contribute 🎉
-
-✔ Fork the repo
-✔ Create a feature branch
-git checkout -b feature-name
-
-✔ Commit changes
-git commit -m "Added new feature"
-
-✔ Push branch
-git push origin feature-name
-
-✔ Submit Pull Request
-📜 License
-
-This project is released under the MIT License.
-See LICENSE file for full text.
-
-⭐ Show Support
-
-If this repo helped you, please ⭐ the repository.
-Your support motivates more open-source work ❤️
+<p align="center">
+  <img src="https://img.shields.io/github/stars/yogender-kumar-creator/FinanceInsight?style=social" />
+</p>
