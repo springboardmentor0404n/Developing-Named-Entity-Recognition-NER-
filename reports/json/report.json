@@ -1,0 +1,53 @@
+{
+  "Management's Discussion and Analysis": {
+    "summary": "Apple Inc. reported revenue of $416 billion in FY 2024. Net income was $94 billion. EPS reached 6.12.",
+    "entities": [
+      [
+        "Apple Inc.",
+        "ORG"
+      ],
+      [
+        "$416B",
+        "MONEY"
+      ]
+    ],
+    "metrics": {
+      "Revenue": 416,
+      "Net Income": 94
+    }
+  },
+  "Risk Factors": {
+    "summary": "The company faces supply chain disruptions.",
+    "entities": [
+      [
+        "Apple Inc.",
+        "ORG"
+      ],
+      [
+        "$416B",
+        "MONEY"
+      ]
+    ],
+    "metrics": {
+      "Revenue": 416,
+      "Net Income": 94
+    }
+  },
+  "Financial Statements": {
+    "summary": "Revenue: $416B, Net Income: $94B",
+    "entities": [
+      [
+        "Apple Inc.",
+        "ORG"
+      ],
+      [
+        "$416B",
+        "MONEY"
+      ]
+    ],
+    "metrics": {
+      "Revenue": 416,
+      "Net Income": 94
+    }
+  }
+}

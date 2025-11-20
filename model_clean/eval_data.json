@@ -1,0 +1,19 @@
+[
+  {
+    "text": "Amazon issued 500,000 shares of Common Stock listed on Nasdaq under ticker AMZN.",
+    "entities": [
+      [14, 21, "QUANTITY"],
+      [30, 42, "SECURITY_TYPE"],
+      [52, 58, "EXCHANGE"],
+      [71, 75, "STOCK_TICKER"]
+    ]
+  },
+  {
+    "text": "Amazon.com Inc. reported net income of $9.9 billion for the quarter ended September 30, 2025.",
+    "entities": [
+      [0, 15, "ORG"],
+      [39, 52, "MONEY"],
+      [89, 107, "DATE"]
+    ]
+  }
+]

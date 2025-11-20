@@ -1,0 +1,20 @@
+[
+  {
+    "text": "Amazon issued 500,000 shares of Common Stock listed on Nasdaq under ticker AMZN.",
+    "entities": [
+      [0, 6, "ORG"],
+      [14, 21, "QUANTITY"],
+      [22, 41, "SECURITY_TYPE"],
+      [52, 58, "EXCHANGE"],
+      [71, 75, "STOCK_TICKER"]
+    ]
+  },
+  {
+    "text": "Apple Inc. reported earnings of $12.5 billion for Q3 2025.",
+    "entities": [
+      [0, 10, "ORG"],
+      [30, 43, "MONEY"],
+      [49, 56, "DATE"]
+    ]
+  }
+]

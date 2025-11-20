@@ -1,0 +1,32 @@
+[
+  {
+    "type": "EXCHANGE",
+    "value": "12",
+    "context": ""
+  },
+  {
+    "type": "REVENUE",
+    "value": ".5 billion",
+    "context": "regex match"
+  },
+  {
+    "type": "REVENUE",
+    "value": " billion",
+    "context": "regex match"
+  },
+  {
+    "type": "STOCK_PRICE",
+    "value": ".5 ",
+    "context": "regex match"
+  },
+  {
+    "type": "STOCK_PRICE",
+    "value": ".20 ",
+    "context": "regex match"
+  },
+  {
+    "type": "STOCK_PRICE",
+    "value": " ",
+    "context": "regex match"
+  }
+]
