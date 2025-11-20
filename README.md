@@ -130,12 +130,11 @@ Future extension:
 ---
 
 ## 📂 **Project Structure**
-
+```
 Finance-Insight/
 │
 ├── data/
 │   ├── processed/
-│   │   ├── manual_sample/
 │   │   ├── ner_auto_splits/
 │   │   ├── bio_annotation_ready.jsonl
 │   │   ├── bio_auto_annotated.jsonl
@@ -176,6 +175,7 @@ Finance-Insight/
 ├── README.md
 ├── requirements.txt
 └── .gitignore
+```
 
 
 ---
