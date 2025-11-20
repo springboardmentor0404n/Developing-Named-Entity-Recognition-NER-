@@ -3,7 +3,9 @@
 
 ---
 
+
 ![SCREENSHOT](<Screenshot 2025-11-20 181205.png>)
+
 
 This project demonstrates real-world NLP + ML engineering, enabling end-to-end financial document intelligence.
 
@@ -129,10 +131,11 @@ Future extension:
 
 ## 📂 **Project Structure**
 
-finance-insight/
+Finance-Insight/
 │
 ├── data/
 │   ├── processed/
+│   │   ├── manual_sample/
 │   │   ├── ner_auto_splits/
 │   │   ├── bio_annotation_ready.jsonl
 │   │   ├── bio_auto_annotated.jsonl
@@ -173,7 +176,6 @@ finance-insight/
 ├── README.md
 ├── requirements.txt
 └── .gitignore
-
 
 
 ---
