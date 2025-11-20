@@ -396,65 +396,133 @@ def detect_financial_events(
     return results
 
 
+# ======= YAHOO FINANCE / TICKER VERIFICATION (IMPROVED) =======
+
+from functools import lru_cache
+from typing import List, Dict, Any, Optional
+
+# -------------- Simple ticker name -> ticker map (useful for name matching) --------------
+ticker_map = {
+    "Apple Inc.": "AAPL",
+    "Microsoft Corp.": "MSFT",
+    "Amazon.com Inc": "AMZN",
+    "Alphabet Inc Class A": "GOOGL",
+    "Alphabet Inc Class C": "GOOG",
+    "Tesla Inc": "TSLA",
+    "Johnson & Johnson": "JNJ",
+    "Walmart Inc.": "WMT",
+    "JPMorgan Chase & Co.": "JPM",
+    "Visa Inc.": "V",
+    "Procter & Gamble": "PG",
+    "Coca-Cola Company (The)": "KO",
+    "Berkshire Hathaway": "BRK.B",
+    "Home Depot": "HD",
+    "Netflix Inc.": "NFLX",
+    "Meta Platforms, Inc.": "META",
+    "NVIDIA Corporation": "NVDA",
+    "Intel Corp.": "INTC",
+    "Cisco Systems": "CSCO",
+    "Adobe Inc.": "ADBE",
+    "Salesforce Inc.": "CRM",
+    "Pfizer Inc.": "PFE",
+    "Moderna, Inc.": "MRNA",
+    "Merck & Co., Inc.": "MRK",
+    "AbbVie Inc.": "ABBV",
+    "Eli Lilly and Company": "LLY",
+    "UnitedHealth Group Inc.": "UNH",
+    "McDonald's Corp.": "MCD",
+    "Starbucks Corp.": "SBUX",
+    "Costco Wholesale Corp.": "COST",
+    "Target Corp.": "TGT",
+    "Walt Disney Company (The)": "DIS",
+    "Boeing Company": "BA",
+    "General Electric": "GE",
+    "Exxon Mobil Corp.": "XOM",
+    "Chevron Corp.": "CVX",
+    "AT&T Inc.": "T",
+}
+
+# lower-cased name-index for fast lookup
+_ticker_name_index = {k.lower(): v for k, v in ticker_map.items()}
+
+
+def _human_readable_marketcap(market_cap: Optional[float]) -> Optional[str]:
+    """Turn a numeric market cap into a short human readable string (e.g., 12.3B)."""
+    try:
+        if market_cap is None:
+            return None
+        m = float(market_cap)
+        if m >= 1e12:
+            return f"{m/1e12:.2f}T"
+        if m >= 1e9:
+            return f"{m/1e9:.2f}B"
+        if m >= 1e6:
+            return f"{m/1e6:.2f}M"
+        if m >= 1e3:
+            return f"{m/1e3:.2f}K"
+        return str(int(m))
+    except Exception:
+        return None
+
+
 def extract_probable_tickers(text: str) -> List[str]:
     """
-    Prefer explicit indicators:
-      - (TSLA), (AAPL)
-      - ticker: TSLA   symbol: AAPL
-      - cautious name->ticker mapping for top names
+    Improved extraction:
+      - prefer explicit indications (parentheses, 'ticker:' etc.)
+      - then try to match company names via ticker_map (case-insensitive)
+      - then fallback to permissive uppercase tokens if nothing found
+    Returns unique tickers in appearance order.
     """
     if not text:
         return []
+
     found = []
-    # explicit parentheses e.g. (TSLA)
-    for m in re.finditer(r'\((?P<t>[A-Z]{1,5}(?:\.[A-Z])?)\)', text):
+    txt = text
+
+    # 1) explicit parentheses: (TSLA)
+    for m in re.finditer(r'\((?P<t>[A-Z]{1,6}(?:\.[A-Z])?)\)', txt):
         t = m.group("t").upper()
         if t not in found:
             found.append(t)
-    # explicit "ticker: XXX" or "symbol: XXX"
-    for m in re.finditer(r'(?:ticker|symbol)\s*[:\-]\s*([A-Z]{1,5}(?:\.[A-Z])?)', text, re.I):
+
+    # 2) explicit "ticker: XXX" or "symbol: XXX"
+    for m in re.finditer(r'(?:ticker|symbol)\s*[:\-]\s*([A-Z]{1,6}(?:\.[A-Z])?)', txt, re.I):
         t = m.group(1).upper()
         if t not in found:
             found.append(t)
-    # cautious name -> ticker guesses (common big names only)
-    low = text.lower()
-    if "tesla" in low and "TSLA" not in found:
-        found.append("TSLA")
-    if "apple inc" in low or ("apple" in low and "iphone" in low):
-        if "AAPL" not in found:
-            found.append("AAPL")
-    if "netflix" in low and "NFLX" not in found:
-        found.append("NFLX")
-    if "microsoft" in low and "MSFT" not in found:
-        found.append("MSFT")
-    # dedupe & preserve order
+
+    # 3) company name matches using ticker_map (conservative)
+    low = txt.lower()
+    # check longest names first to avoid partial matches (sort by length desc)
+    for nm in sorted(_ticker_name_index.keys(), key=lambda s: -len(s)):
+        if nm in low:
+            t = _ticker_name_index[nm]
+            if t not in found:
+                found.append(t)
+
+    # 4) if still empty, use permissive uppercase fallback but keep small limit
+    if not found:
+        for m in re.finditer(r'\b([A-Z]{2,5}(?:\.[A-Z])?)\b', txt):
+            t = m.group(1).upper()
+            if t in {"IPO", "EPS", "PE", "NAV", "ROE", "ROI", "CAGR", "EBITDA", "PV", "IRR", "DCF", "FCF"}:
+                continue
+            if t not in found:
+                found.append(t)
+            if len(found) >= 12:
+                break
+
+    # final dedupe & return
     return list(dict.fromkeys(found))
 
-def extract_tickers_fallback(text: str) -> List[str]:
-    """
-    Simple uppercase-token fallback when no explicit hints were found.
-    This is more permissive — used only as fallback.
-    """
-    if not text:
-        return []
-    found = []
-    for m in re.finditer(r'\b([A-Z]{2,5}(?:\.[A-Z])?)\b', text):
-        t = m.group(1).upper()
-        # avoid common non-ticker acronyms
-        if t in {"IPO","EPS","PE","NAV","ROE","ROI","CAGR","EBITDA","PV","IRR","DCF","FCF"}:
-            continue
-        if t not in found:
-            found.append(t)
-    return found
 
 @lru_cache(maxsize=512)
 def _fetch_ticker_info(ticker: str) -> Optional[Dict[str, Any]]:
     """
-    Robust single-ticker fetch:
+    Robust single-ticker fetch using yfinance:
       - tries fast_info, then info, then 1d history for price
       - fetches marketCap, sector/industry if present
-      - returns 1y history (pandas DataFrame) as list-of-(date,close) or None
-    Returns None if no numeric price available.
+      - returns 1y history as small list for trend computations
+    Returns None if ticker couldn't be validated (no numeric price).
     """
     try:
         import yfinance as yf
@@ -468,52 +536,58 @@ def _fetch_ticker_info(ticker: str) -> Optional[Dict[str, Any]]:
     except Exception:
         return None
 
-    result = {"ticker": t, "price": None, "name": None, "market_cap": None, "sector": None, "industry": None, "history": None}
+    out = {"ticker": t, "price": None, "name": None, "market_cap": None, "sector": None, "industry": None, "history": None}
 
-    # 1) Try fast_info for quick price
+    # Attempt price via multiple paths
+    price = None
     try:
         fast = getattr(tk, "fast_info", {}) or {}
-        price = fast.get("last_price") or fast.get("lastPrice") or fast.get("lastClose") or fast.get("previous_close")
-        if price is None:
-            # 2) try tk.info fields
-            info = getattr(tk, "info", {}) or {}
-            price = info.get("regularMarketPrice") or info.get("previousClose") or info.get("currentPrice")
-        # 3) fallback to 1d history if still None
-        if price is None:
-            hist1 = tk.history(period="1d", interval="1d")
-            if hist1 is not None and len(hist1) > 0:
-                price = float(hist1["Close"].iloc[-1])
+        price = fast.get("last_price") or fast.get("lastPrice") or fast.get("previous_close")
     except Exception:
         price = None
 
-    # Name / market cap / sector
     try:
         info = getattr(tk, "info", {}) or {}
-        result["name"] = info.get("longName") or info.get("shortName") or info.get("symbol") or t
-        result["market_cap"] = info.get("marketCap") or info.get("market_cap") or None
-        # sector/industry helpful for benchmarking
-        result["sector"] = info.get("sector")
-        result["industry"] = info.get("industry")
+        if price is None:
+            price = info.get("regularMarketPrice") or info.get("previousClose") or info.get("currentPrice")
     except Exception:
-        # fill minimal fallback
-        result["name"] = t
+        pass
+
+    # final fallback: 1d history
+    if price is None:
+        try:
+            hist1 = tk.history(period="1d", interval="1d", auto_adjust=False)
+            if hist1 is not None and len(hist1) > 0:
+                price = float(hist1["Close"].iloc[-1])
+        except Exception:
+            price = None
+
+    # fill metadata
+    try:
+        info = getattr(tk, "info", {}) or {}
+        out["name"] = info.get("longName") or info.get("shortName") or info.get("symbol") or t
+        out["market_cap"] = info.get("marketCap") or info.get("market_cap")
+        out["sector"] = info.get("sector")
+        out["industry"] = info.get("industry")
+    except Exception:
+        out["name"] = t
 
     if price is None:
         return None
 
-    result["price"] = float(price)
+    out["price"] = float(price)
 
-    # Try to fetch history (1y) for trends (keep as small list to avoid heavy memory use)
+    # fetch 1y history (compact)
     try:
         hist = tk.history(period="1y", interval="1d", auto_adjust=True)
         if hist is not None and len(hist) > 10:
-            # reduce to date + close floats to be JSON serializable
             hist_small = [{"date": str(idx.date()), "close": float(row["Close"])} for idx, row in hist.iterrows()]
-            result["history"] = hist_small
+            out["history"] = hist_small
     except Exception:
-        result["history"] = None
+        out["history"] = None
 
-    return result
+    return out
+
 
 @lru_cache(maxsize=16)
 def _fetch_benchmark(bench_symbol: str = "^GSPC") -> Optional[Dict[str, Any]]:
@@ -532,41 +606,33 @@ def _fetch_benchmark(bench_symbol: str = "^GSPC") -> Optional[Dict[str, Any]]:
     except Exception:
         return None
 
+
 def _compute_returns_from_history(hist_small: Optional[List[Dict[str, float]]]) -> Dict[str, Optional[float]]:
-    """Given histogram list-of-dicts with date/close compute 1M,3M,1Y returns (as pct)."""
+    """Given small history list compute 1M, 3M, 1Y percent returns."""
     if not hist_small or len(hist_small) < 5:
         return {"1M": None, "3M": None, "1Y": None}
-    # assume hist_small sorted by date ascending
     closes = [x["close"] for x in hist_small]
     n = len(closes)
+
     def pct_change(from_idx):
         try:
             return (closes[-1] - closes[from_idx]) / closes[from_idx] * 100.0
         except Exception:
             return None
-    one_month_idx = max(0, n - 22)   # ~22 trading days
-    three_month_idx = max(0, n - 65) # ~65 trading days
+
+    one_month_idx = max(0, n - 22)
+    three_month_idx = max(0, n - 65)
     one_year_idx = 0
     return {"1M": pct_change(one_month_idx), "3M": pct_change(three_month_idx), "1Y": pct_change(one_year_idx)}
 
+
 def verify_with_financial_db(text: str, include_benchmark: bool = True) -> Dict[str, Any]:
     """
-    Main verification function:
-      - uses extract_probable_tickers (fallback to permissive extraction)
-      - validates each ticker via _fetch_ticker_info (only keeps numeric price)
-      - computes simple trend metrics using 1y history
-      - optionally fetches benchmark (^GSPC) returns and computes relative returns
-    Returns:
-      {
-        "tickers": [
-          {
-            "ticker","price","name","market_cap","sector","industry",
-            "returns":{"1M":..,"3M":..,"1Y":..},
-            "benchmark_returns":{"1M":..,...} (optional)
-          }, ...
-        ],
-        "benchmark": {symbol, history} (optional)
-      }
+    Main verification:
+      - gather ticker candidates via extract_probable_tickers (using ticker_map)
+      - fallback to permissive uppercase extraction if none found
+      - validate each ticker with _fetch_ticker_info
+      - compute simple trend metrics and optionally compare vs benchmark
     """
     verified = {"tickers": []}
     try:
@@ -574,15 +640,12 @@ def verify_with_financial_db(text: str, include_benchmark: bool = True) -> Dict[
     except Exception:
         return verified
 
-    # 1) find candidates
-    cand = extract_probable_tickers(text)
-    if not cand:
-        cand = extract_tickers_fallback(text)[:15]  # keep limit
+    # 1) candidates from name/ticker heuristics
+    cand = extract_probable_tickers(text) or [t.upper() for t in re.findall(r'\b([A-Z]{2,5}(?:\.[A-Z])?)\b', text)][:12]
 
-    # normalize & dedupe
-    cand = list(dict.fromkeys([c.upper() for c in cand]))
+    cand = list(dict.fromkeys([c.upper() for c in cand]))  # normalize & dedupe
 
-    # fetch benchmark once
+    # fetch benchmark returns once
     benchmark = None
     bench_returns = None
     if include_benchmark:
@@ -594,42 +657,32 @@ def verify_with_financial_db(text: str, include_benchmark: bool = True) -> Dict[
     for t in cand:
         info = _fetch_ticker_info(t)
         if not info:
+            # try to resolve via ticker_map values (maybe user wrote full company name)
+            # e.g., if cand contains a company full name (unlikely here) — skip
             continue
 
-        # compute returns dictionary from history (if available)
         returns = _compute_returns_from_history(info.get("history")) if info.get("history") else {"1M": None, "3M": None, "1Y": None}
 
         entry = {
             "ticker": info["ticker"],
-            "price": round(float(info["price"]), 3) if info.get("price") is not None else None,
             "name": info.get("name"),
+            "price": round(float(info["price"]), 3) if info.get("price") is not None else None,
             "market_cap": info.get("market_cap"),
-            "market_cap_human": None,  # placeholder if you have _human_readable_marketcap defined elsewhere
+            "market_cap_human": _human_readable_marketcap(info.get("market_cap")),
             "sector": info.get("sector"),
             "industry": info.get("industry"),
-            "returns": returns
+            "returns": returns,
+            "1M_return_pct": round(returns.get("1M"), 3) if returns.get("1M") is not None else None,
+            "3M_return_pct": round(returns.get("3M"), 3) if returns.get("3M") is not None else None,
+            "1Y_return_pct": round(returns.get("1Y"), 3) if returns.get("1Y") is not None else None,
         }
 
-        # add human-readable market cap if helper exists (keeps compatibility)
-        try:
-            entry["market_cap_human"] = _human_readable_marketcap(info.get("market_cap"))
-        except Exception:
-            pass
-
-        # relative vs benchmark (if both available)
+        # vs benchmark
         if bench_returns and entry["returns"].get("1Y") is not None:
             try:
-                entry["vs_benchmark_1Y_pct"] = entry["returns"].get("1Y") - bench_returns.get("1Y", 0.0)
+                entry["vs_benchmark_1Y_pct"] = round(entry["returns"]["1Y"] - bench_returns.get("1Y", 0.0), 3)
             except Exception:
                 entry["vs_benchmark_1Y_pct"] = None
-
-        # add separate pct fields for table convenience
-        try:
-            entry["1M_return_pct"] = round(entry["returns"].get("1M"), 3) if entry["returns"].get("1M") is not None else None
-            entry["3M_return_pct"] = round(entry["returns"].get("3M"), 3) if entry["returns"].get("3M") is not None else None
-            entry["1Y_return_pct"] = round(entry["returns"].get("1Y"), 3) if entry["returns"].get("1Y") is not None else None
-        except Exception:
-            entry["1M_return_pct"] = entry["3M_return_pct"] = entry["1Y_return_pct"] = None
 
         out.append(entry)
 
@@ -637,6 +690,7 @@ def verify_with_financial_db(text: str, include_benchmark: bool = True) -> Dict[
     if benchmark:
         verified["benchmark"] = {"symbol": benchmark["symbol"], "returns": bench_returns}
     return verified
+
 # ======= END YAHOO FINANCE HELPERS =======
 
 # -------------------- ONE-CALL PIPELINE --------------------
@@ -668,7 +722,7 @@ except Exception:
     pd = None
 
 
-def extract_text_and_tables_from_pdf(path_or_file) -> Tuple[str, List[Tuple[int, 'pd.DataFrame']]]:
+def extract_text_and_tables_from_pdf(path_or_file) -> Tuple[str, List[Tuple[int, Any]]]:
     """
     Safely extract text and tables from a PDF file using pdfplumber.
     Returns (full_text, list_of_(page_number, DataFrame)).
@@ -735,7 +789,7 @@ def _parse_number_like(s: str) -> Optional[float]:
         return None
 
 
-def normalize_table_dataframe(df: 'pd.DataFrame', context_text: str = "", numeric_frac_threshold: float = 0.2) -> 'pd.DataFrame':
+def normalize_table_dataframe(df: Any, context_text: str = "", numeric_frac_threshold: float = 0.2) -> Any:
     """
     Convert table DataFrame to numeric where possible (default threshold 20% parsable).
     Keeps textual columns as cleaned strings.
@@ -765,7 +819,7 @@ def normalize_table_dataframe(df: 'pd.DataFrame', context_text: str = "", numeri
     return numeric
 
 
-def _attempt_shift_correction(numeric_df: 'pd.DataFrame') -> 'pd.DataFrame':
+def _attempt_shift_correction(numeric_df: Any) -> Any:
     """
     Heuristic: if column i is almost empty and column i+1 is numeric, shift some numeric values right.
     Conservative correction to fix common pdf parsing misalignment.
@@ -793,10 +847,10 @@ def _attempt_shift_correction(numeric_df: 'pd.DataFrame') -> 'pd.DataFrame':
     return df
 
 
-def filter_tables(raw_tables: List[Tuple[int, 'pd.DataFrame']],
+def filter_tables(raw_tables: List[Tuple[int, Any]],
                   min_rows: int = 2,
                   min_cols: int = 2,
-                  min_text_ratio: float = 0.12) -> List[Tuple[int, 'pd.DataFrame']]:
+                  min_text_ratio: float = 0.12) -> List[Tuple[int, Any]]:
     """
     Keep only likely-useful tables:
       - at least min_rows x min_cols
@@ -913,7 +967,7 @@ def segment_sections(text: str) -> Dict[str, str]:
     return out
 
 
-def guess_table_type(df: 'pd.DataFrame') -> str:
+def guess_table_type(df: Any ) -> str:
     """
     Very small heuristic to label tables (Balance Sheet, Income, Cash Flow, Other)
     - looks for keywords in header/text.
