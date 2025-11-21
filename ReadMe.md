@@ -43,70 +43,7 @@ Features
    * Can be loaded anytime locally or deployed on cloud
    * Compatible with CPU and GPU environments
 
-Installation
-Clone the project:
 
-```
-git clone https://github.com/yourusername/FinanceInsight.git
-cd FinanceInsight
-```
-
-Install dependencies:
-
-```
-pip install -r requirements.txt
-```
-
-If your model folder is included locally, ensure the directory is:
-
-```
-./financial_ner_model
-```
-
-If loading from Hugging Face Hub, set:
-
-```
-MODEL_ID="your-username/finance-ner-model"
-```
-
-Running NER on Text
-Example:
-
-```python
-from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline
-
-model_path = "./financial_ner_model"
-tokenizer = AutoTokenizer.from_pretrained(model_path)
-model = AutoModelForTokenClassification.from_pretrained(model_path)
-
-ner = pipeline("ner", model=model, tokenizer=tokenizer, aggregation_strategy="simple")
-
-text = "Apple reported revenue of $89 billion on October 2023."
-print(ner(text))
-```
-
-Running NER on a PDF
-
-```python
-import pdfplumber
-text = ""
-
-with pdfplumber.open("sample.pdf") as pdf:
-    for page in pdf.pages:
-        t = page.extract_text()
-        if t:
-            text += t
-
-print(ner(text))
-```
-
-Running the Web Demo (Gradio)
-
-```bash
-python app.py
-```
-
-Then open the URL printed by Gradio.
 
 Model Training Summary
 The NER model was trained in four milestones:
